@@ -2,7 +2,7 @@
 
 class socialStream:
 
-    def getLikeToUrl(access_token,num):
+    def getLikeToUrl(self,access_token,num):
         import facebook
         import json
 
@@ -16,7 +16,7 @@ class socialStream:
             url_list.append(url_like_dict["url"])
         return url_list
 
-    def getHatebFromUser(user_name,num=5):
+    def getHatebFromUser(self,user_name,num=5):
         import feedparser
 
         url_list=[]
@@ -26,12 +26,15 @@ class socialStream:
                 url_list.append(atom.entries[j]['links'][0]['href'])
         return url_list
 
-    def userTimelineToUrl(self,consumer_key,consumer_secret,access_token_key,access_token_secret):
+    def userTimelineToUrl(self,access_token_key,access_token_secret):
 
         import twitter
         import re
         import urllib2
         import time
+
+        consumer_key='Your twitter app consumer key'
+        consumer_secret='Your twitter app consumer secret'
 
         api=twitter.Api(consumer_key=consumer_key,consumer_secret=consumer_secret,access_token_key=access_token_key,access_token_secret=access_token_secret)
         url_list=[]

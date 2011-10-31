@@ -1,7 +1,10 @@
 # -*- coding:utf-8 -*-
 
 class socialStream:
-
+    
+    #facebookのlikeのurlを取得
+    #params access_token:facebookのアクセストークン,num:取得したいurlの数
+    #return urlのリスト
     def getLikeToUrl(self,access_token,num):
         import facebook
         import json
@@ -15,7 +18,10 @@ class socialStream:
         for url_like_dict in url_like_list:
             url_list.append(url_like_dict["url"])
         return url_list
-
+    
+    #はてなのidからはてぶしているurlを取得
+    #params user_name:はてなid,num:取得したいurlの数
+    #return urlのリスト
     def getHatebFromUser(self,user_name,num=5):
         import feedparser
 
@@ -26,6 +32,9 @@ class socialStream:
                 url_list.append(atom.entries[j]['links'][0]['href'])
         return url_list
 
+    #twitterのタイムラインからurlを取得
+    #params access_token_key:twitterのアクセストークン,access_token_secret:twitterのトークンシークレット
+    #return urlのリスト
     def userTimelineToUrl(self,access_token_key,access_token_secret):
 
         import twitter
@@ -44,7 +53,7 @@ class socialStream:
         while True:
             try:
                 time.sllep(1)
-                statuses=api.GetUserTimeline(screen_name='fukkyy',count=200,page=i)
+                statuses=api.GetUserTimeline(screen_name='screen_name',count=200,page=i)
                 for s in statuses:
                     match=re.search(pattern,s.text)
                     if match!=None:
@@ -58,6 +67,9 @@ class socialStream:
 
         return url_list
 
+    #短縮urlを展開
+    #params url_list:短縮urlの入ったリスト
+    #return 展開されたurlのリスト
     def getRealUrl(self,url_list):
 
         import gevent

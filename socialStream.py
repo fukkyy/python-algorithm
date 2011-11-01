@@ -19,6 +19,20 @@ class socialStream:
             url_list.append(url_like_dict["url"])
         return url_list
     
+    #facebookのshareのurlを取得
+    #params access_token:facebookのアクセストークン、num:取得したいurlの数
+    #return urlのリスト
+    def getShareToUrl(self,access_token,num):
+        import facebook
+        import json
+        
+        url_list=[]
+        graph=facebook.GraphAPI(access_token)
+        url_share_link=graph.fql("SELECT url FROM link WHERE owner = me() LIMIT" + str(num))
+        for url_share_dict in url_share_list:
+            url_list.append(url_like_dict["url"])
+        return url_list
+    
     #はてなのidからはてぶしているurlを取得
     #params user_name:はてなid,num:取得したいurlの数
     #return urlのリスト

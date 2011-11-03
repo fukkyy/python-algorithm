@@ -2,6 +2,7 @@
 import MySQLdb
 from MySQLdb.cursors import DictCursor 
 
+#mysql_mod Class help you use MySQLdb module
 class mysql_md:
 
     #Constructor:when you make instance,constructor connect database and make cursor.
@@ -11,7 +12,7 @@ class mysql_md:
         self.con=MySQLdb.connect(host=hostname, db=dbname, user=username, passwd=password)
         self.cur=self.con.cursor(DictCursor)
 
-    #query:if you input correct sql,query easily execute your input sql.
+    #query:if you input correct sql,query(sql) easily execute your input sql.
     #params sql:sql
     #return True:correct sql,and execute sql False:Invalid sql
     def query(self,sql):
@@ -21,7 +22,7 @@ class mysql_md:
         except MySQLdb.OperationalError:
             return False
     
-    #update_query: function update_query(sql) is same function as query(sql) for only UPDATE method.
+    #update_query: function update_query(sql) is same function as query(sql), but for only UPDATE method.
     #params sql:sql(only UPDATE method)
     #eturn True:correct sql,and execute sql False:Invalid sql
     def update_query(self,sql):

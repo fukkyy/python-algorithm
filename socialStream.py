@@ -66,7 +66,7 @@ class socialStream:
         i=0
         while True:
             try:
-                time.sllep(1)
+                time.sleep(1)
                 statuses=api.GetUserTimeline(count=200,page=i)
                 for s in statuses:
                     match=re.search(pattern,s.text)

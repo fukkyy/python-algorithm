@@ -67,7 +67,7 @@ class socialStream:
         while True:
             try:
                 time.sllep(1)
-                statuses=api.GetUserTimeline(screen_name='screen_name',count=200,page=i)
+                statuses=api.GetUserTimeline(count=200,page=i)
                 for s in statuses:
                     match=re.search(pattern,s.text)
                     if match!=None:

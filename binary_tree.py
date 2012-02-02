@@ -30,3 +30,6 @@ def insert(node,x):
         node.right=insert(node.right,x)
     
     return node
+
+def delete(node,x):
+    pass

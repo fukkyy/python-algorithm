@@ -32,8 +32,7 @@ def heapsort(A):
     while len(A)>1:
         result.append(A[0])
         tmp=A[1:len(A)-1]
-        A=A[len(A)-1:]
-        A=A+tmp
+        A=A[len(A)-1:]+tmp
         build_max_heap(A)
     return result
 

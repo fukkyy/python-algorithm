@@ -1,43 +1,27 @@
+#! /usr/local/bin/python
 # -*-coding:utf-8 -*-
-def quickSort(array,i,j):
-    '''
-    高速な配列のソート
-    '''
-    pivot=find_pivot(array,i,j)
-    k=partition(array,i,j,pivot)
-    quickSort(array,i,k-1)
-    quickSort(array,k,j)
 
-def find_pivot(array,i,j):
-    '''
-    arrayのiからj番目を探索
-    異なる2つの値を得た時点で大きい方を返す
-    '''
-    x=i
-    while True:
-        if x+1==j:
-            return array[x]
-        if array[x]==array[x+1]:
-            continue
-        elif array[x]>array[x+1]:
-            return array[x]
-        else:
-            return array[x+1]
+# A:list,p:start point,r:end point
+# how to use:calling "quick_sort(A,0,len(A)-1)"
+def quick_sort(A,p,r):
+    if p<r:
+        q=partition(A,p,r)
+        quick_sort(A,p,q)
+        quick_sort(A,q+1,r)
 
-def partition(array,l,r,pivot):
-    '''
-    arrayのi-j番目の要素の順番を入れ替える
-    k番目まではpivotより小さく,k番目以降はpivotより大きい
-    '''
-    while True:
-        while array[l]<pivot:
-            l=l+1
-        while array[r]>=pivot:
-            r=r-1
-        if l>r:
-            return l
-        tmp_l=array[l]
-        tmp_r=array[r]
+# partition devides list(over pivot and under pivot)
+# return: number of  under pivot point 
+def partition(A,p,r):
+    pivot=A[r]
+    i=p-1
+    for j in range(p,r):
+        if A[j]<=pivot:
+            i+=1
+            A[i],A[j]=A[j],A[i]
+    A[i+1],A[r]=A[r],A[i+1]
+    return i
 
-        array[r]=tmp_l
-        array[l]=tmp_r
+if __name__=='__main__':
+    A=[2,8,7,1,3,5,6,4]
+    quick_sort(A,0,len(A)-1)
+    print A

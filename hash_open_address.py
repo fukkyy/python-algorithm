@@ -34,6 +34,9 @@ class HashOpenAddress:
                 return None
 
     def insert(self,k):
+        if k=='deleted':
+            print '"deleted" is prohibited key'
+            return None
         hash=self.hash(k)
         if self.table[hash]==None or self.table[hash]=='deleted':
             self.table[hash]=k
@@ -55,6 +58,9 @@ class HashOpenAddress:
                 print 'table is max,no empty colmun'
 
     def delete(self,k):
+        if k=='deleted':
+            print '"deleted" is prohibited key'
+            return None
         hash=self.search_hash(k)
         if hash!=None:
             self.table[hash]='deleted'
@@ -62,6 +68,8 @@ class HashOpenAddress:
             print 'no item,so cannot delete'
 
     def search(self,k):
+        if k=='deleted':
+            return '"deleted" is prohibited key'
         hash=self.search_hash(k)
         if hash!=None:
             return self.table[hash]
@@ -88,7 +96,10 @@ if __name__=='__main__':
     print h.search(11)
     h.delete(16)
     print h.table
-    h.insert(8)
+    h.insert('poko')
     print h.table
-    print h.search(8)
+    print h.search('poko')
+    h.insert('deleted')
+    h.delete('deleted')
+    print h.search('deleted')
 

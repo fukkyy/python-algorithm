@@ -98,7 +98,7 @@ class BinaryTree:
         #two child
         else:
             #searching cover node
-            min_node=self.node[self.node[delete_node.id].left]
+            min_node=self.node[self.node[delete_node.id].right]
             while True:
                 if min_node.left==None:
                     break
@@ -106,9 +106,8 @@ class BinaryTree:
             # changing node pointer
             if min_node.parent==delete_node.id:
                 min_node.parent=delete_node.parent
-                min_node.right=delete_node.right
-                if delete_node.right!=None:
-                    self.node[delete_node.right].parent=min_node.id
+                min_node.left=delete_node.left
+                self.node[delete_node.left].parent=min_node.id
 
                 if min_node.key<=self.node[delete_node.parent].key:
                     self.node[delete_node.parent].left=min_node.id
@@ -116,13 +115,13 @@ class BinaryTree:
                     self.node[delete_node.parent].right=min_node.id
             else:
                 self.node[min_node.parent].left=min_node.right
-                self.node[min_node.right].parent=min_node.parent
+                if min_node.right!=None:
+                    self.node[min_node.right].parent=min_node.parent
                 min_node.parent=delete_node.parent
                 min_node.left=delete_node.left
                 min_node.right=delete_node.right
                 self.node[delete_node.left].parent=min_node.id
-                if delete_node.right!=None:
-                    self.node[delete_node.right].parent=min_node.id
+                self.node[delete_node.right].parent=min_node.id
 
                 if min_node.key<=self.node[delete_node.parent].key:
                     self.node[delete_node.parent].left=min_node.id
@@ -135,17 +134,9 @@ if __name__=='__main__':
     print bt.search(34)
     for i in A:
         bt.insert(i)
-    bt.insert(81)
-    bt.insert(57)
-    bt.insert(62)
+    bt.insert(43)
     print bt.search(17)
     print bt.search(30)
     print bt.search(72)
-    print bt.search(62)
-    bt.delete(72)
-    print bt.search(57)
-    print bt.search(66)
-    print bt.search(72)
-    print bt.search(81)
-    bt.delete(81)
-    print bt.search(81)
+    bt.delete(51)
+    print bt.search(43)

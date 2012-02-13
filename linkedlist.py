@@ -39,9 +39,11 @@ class Linkedlist:
         if self.list_search(key)==None:
             print 'input_value doesn\'t exist in list'
         else:
+            #search delete obj
             obj=self.list_search(key)
             self.obj[obj.prev].next=obj.next
-            self.obj[obj.next].prev=obj.prev
+            if obj.next!=None:
+                self.obj[obj.next].prev=obj.prev
             self.obj[obj.id].prev=None
             self.obj[obj.id].next=None
 

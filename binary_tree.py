@@ -114,12 +114,14 @@ class BinaryTree:
                     self.node[delete_node.parent].right=min_node.id
             else:
                 self.node[min_node.parent].left=min_node.right
+                self.node[min_node.right].parent=min_node.parent
                 min_node.parent=delete_node.parent
                 min_node.left=delete_node.left
                 min_node.right=delete_node.right
                 self.node[delete_node.left].parent=min_node.id
                 if delete_node.right!=None:
                     self.node[delete_node.right].parent=min_node.id
+
                 if min_node.key<=self.node[delete_node.parent].key:
                     self.node[delete_node.parent].left=min_node.id
                 else:

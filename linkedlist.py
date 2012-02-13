@@ -1,7 +1,7 @@
 #! /usr/local/bin/python
 # -*- coding:utf-8 -*-
 
-class linkedlist:
+class Linkedlist:
     class cell:
         def __init__(self,key,id,prev=None,next=None):
             self.id=id

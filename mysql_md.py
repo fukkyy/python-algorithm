@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import MySQLdb
 from MySQLdb.cursors import DictCursor 
+import sys
 
 #mysql_mod Class help you use MySQLdb module
 class mysql_md:
@@ -18,20 +19,16 @@ class mysql_md:
     def query(self,sql):
         try:
             self.cur.execute(sql)
-            return True
-        except MySQLdb.OperationalError:
-            return False
-    
-    #update_query: function update_query(sql) is same function as query(sql), but for only UPDATE method.
-    #params sql:sql(only UPDATE method)
-    #eturn True:correct sql,and execute sql False:Invalid sql
-    def update_query(self,sql):
-        try:
-            self.cur.execute(sql)
             self.con.commit()
             return True
         except MySQLdb.OperationalError:
+            print sys.exc_info()
             return False
+        except MySQLdb.IntegrityError:
+            print sys.exc_info()
+            return False
+        #except MySQLdb.ProgrammingError:
+        #    return False
 
     #fetch_all: if you finish execute sql,you call this function.this function fetch sql result and retrn dicttionary.
     #params void

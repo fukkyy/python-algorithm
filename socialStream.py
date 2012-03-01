@@ -71,11 +71,8 @@ class socialStream:
         import sys
 
         # 本番
-        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
-        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
-        # テスト
-        #consumer_key='8plxcmjxSrw5PsWsluA'
-        #consumer_secret='7BMpM9FeyuqfOIOOCWPVwyrKhDKAXzy4i3gywi1Emm8'
+        consumer_key='your_consumer_key'
+        consumer_secret='your_consumer_secret'
 
         api=twitter.Api(consumer_key=consumer_key,consumer_secret=consumer_secret,access_token_key=access_token_key,access_token_secret=access_token_secret)
         url_list=[]
@@ -125,8 +122,8 @@ class socialStream:
         import time
         import sys
         
-        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
-        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
+        consumer_key='your_consumer_key'
+        consumer_secret='your_consumer_secret'
         
         api=twitter.Api(consumer_key=consumer_key,
                         consumer_secret=consumer_secret,
@@ -182,8 +179,8 @@ class socialStream:
         import time
         import sys
 
-        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
-        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
+        consumer_key='your_consumer_key'
+        consumer_secret='your_consumer_secret'
 
         api=twitter.Api(consumer_key=consumer_key,
                         consumer_secret=consumer_secret,

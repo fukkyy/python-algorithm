@@ -1,42 +1,55 @@
 # -*- coding:utf-8 -*-
-
 class socialStream:
-    
     #facebookのlikeのurlを取得
     #params access_token:facebookのアクセストークン,num:取得したいurlの数
     #return urlのリスト
-    def getLikeToUrl(self,access_token,num):
-        import facebook
-        import json
-
-        facebook_app_id='Your faecbook app id'
-        facebook_app_secret='Your facebook app secret'
-
+    def getLikedUrl(self,access_token,num):
         url_list=[]
-        graph=facebook.GraphAPI(access_token)
-        url_like_list=graph.fql("SELECT url FROM url_like WHERE user_id = me() LIMIT "+str(num))
-        for url_like_dict in url_like_list:
-            url_list.append(url_like_dict["url"])
+        try:
+            import facebook
+            import json
+
+            graph=facebook.GraphAPI(access_token)
+            url_like_list=graph.fql("SELECT url FROM url_like WHERE user_id = me() LIMIT "+str(num))
+            for url_like_dict in url_like_list:
+                url_list.append(url_like_dict["url"])
+        except facebook.GraphAPIError:
+            import sys
+            print sys.exc_info()
+        except:
+            import sys
+            print sys.exc_info()
+            
         return url_list
     
     #facebookのshareのurlを取得
     #params access_token:facebookのアクセストークン、num:取得したいurlの数
     #return urlのリスト
-    def getShareToUrl(self,access_token,num):
-        import facebook
-        import json
-        
+    def getSharedUrl(self,access_token,num):
         url_list=[]
-        graph=facebook.GraphAPI(access_token)
-        url_share_link=graph.fql("SELECT url FROM link WHERE owner = me() LIMIT" + str(num))
-        for url_share_dict in url_share_list:
-            url_list.append(url_like_dict["url"])
+        try:
+            import facebook
+            import json
+            
+            graph=facebook.GraphAPI(access_token)
+                    
+            url_share_list=graph.fql("SELECT url FROM link WHERE owner = me() LIMIT "+str(num))
+            
+            for url_share_dict in url_share_list:
+                url_list.append(url_share_dict["url"])
+        except facebook.GraphAPIError:
+            import sys
+            print sys.exc_info()
+        except:
+            import sys
+            print sys.exc_info()
+
         return url_list
     
     #はてなのidからはてぶしているurlを取得
     #params user_name:はてなid,num:取得したいurlの数
     #return urlのリスト
-    def getHatebFromUser(self,user_name,num=5):
+    def getUrlFromHateb(self,user_name,num=5):
         import feedparser
 
         url_list=[]
@@ -55,9 +68,14 @@ class socialStream:
         import re
         import urllib2
         import time
+        import sys
 
-        consumer_key='Your twitter app consumer key'
-        consumer_secret='Your twitter app consumer secret'
+        # 本番
+        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
+        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
+        # テスト
+        #consumer_key='8plxcmjxSrw5PsWsluA'
+        #consumer_secret='7BMpM9FeyuqfOIOOCWPVwyrKhDKAXzy4i3gywi1Emm8'
 
         api=twitter.Api(consumer_key=consumer_key,consumer_secret=consumer_secret,access_token_key=access_token_key,access_token_secret=access_token_secret)
         url_list=[]
@@ -65,6 +83,7 @@ class socialStream:
 
         i=0
         while True:
+            print i
             try:
                 time.sleep(1)
                 statuses=api.GetUserTimeline(count=200,page=i)
@@ -73,13 +92,139 @@ class socialStream:
                     if match!=None:
                         url_list.append(match.group(0))
                 i+=1
+                if len(url_list)>100:
+                    break
+                elif i==15:
+                    break
+            except twitter.TwitterError:
+                print sys.exc_info()[1][0]
+                if sys.exc_info()[1][0]=='This method requires authentication.':
+                    #authが切れている場合
+                    break
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 150 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 350 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                else:
+                    time.sleep(1)
+                    continue
+
+        return url_list
+
+
+    #twitterのretweetからurlを取得
+    #params access_token_key:twitterのアクセストークン,access_token_secret:twitterのトークンシークレット
+    #return urlのリスト
+    def getUserRetweets(self,access_token_key,access_token_secret):
+        print 'getUserRetweets'
+        import twitter
+        import time
+        import sys
+        
+        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
+        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
+        
+        api=twitter.Api(consumer_key=consumer_key,
+                        consumer_secret=consumer_secret,
+                        access_token_key=access_token_key,
+                        access_token_secret=access_token_secret)
+        url_list=[]
+        
+        max_id=None
+        count=100
+        i=0
+
+        while True:
+            print i
+            try:
+                statuses=api.GetUserRetweets(count=count,max_id=max_id,include_entities=True)
+                for s in statuses:
+                    for u in s.urls:
+                        if u.expanded_url==None:
+                            url_list.append(u.url)
+                        else:
+                            url_list.append(u.expanded_url)
+                    max_id=s.id
+                i+=1
+                if len(url_list)>200:
+                    break
+                elif i==15:
+                    break
+            except twitter.TwitterError:
+                print "Poko"
+                print sys.exc_info()[1][0]
+                if sys.exc_info()[1][0]=='This method requires authentication.':
+                    # authが切れている場合
+                    break
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 150 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 350 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                else:
+                    time.sleep(1)
+                    continue
+        return url_list
+
+    #twitterのfavoriteのurlを取得
+    #params access_token:facebookのアクセストークン,num:取得したいurlの数
+    #return urlのリスト
+    def getFavorites(self,access_token_key,access_token_secret):
+        print 'getFavorites'
+        import twitter
+        import time
+        import sys
+
+        consumer_key='CKCnGeKb1uqzRe9KjngcJg'
+        consumer_secret='JIcQ7VRTEOw0h9S21cJ1O7r33PpKykOsNNpfuUXw70'
+
+        api=twitter.Api(consumer_key=consumer_key,
+                        consumer_secret=consumer_secret,
+                        access_token_key=access_token_key,
+                        access_token_secret=access_token_secret)
+        url_list=[]
+        i=0
+        while True:
+            print i
+            try:
+                statuses=api.GetFavorites(page=i,include_entities=True)
+                for s in statuses:
+                    for u in s.urls:
+                        if u.expanded_url==None:
+                            url_list.append(u.url)
+                        else:
+                            url_list.append(u.expanded_url)
+                if len(url_list)>200:
+                    break
+                i+=1
                 if i==15:
                     break
             except twitter.TwitterError:
-                time.sleep(1)
-                continue
-
+                print sys.exc_info()[1][0]
+                if sys.exc_info()[1][0]=='This method requires authentication.':
+                    # authが切れている場合
+                    break
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 150 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                elif sys.exc_info()[1][0]=='Rate limit exceeded. Clients may not make more than 350 requests per hour.':
+                    # limitに引っかかった場合
+                    time.sleep(60*30)
+                    continue
+                else:
+                    time.sleep(1)
+                    continue
         return url_list
+
+
 
     #短縮urlを展開
     #params url_list:短縮urlの入ったリスト
@@ -98,9 +243,97 @@ class socialStream:
                 real_url_list.append(data)
             except urllib2.HTTPError:
                 pass
+            except urllib2.URLError:
+                pass
+            except:
+                pass
 
         real_url_list=[]
-        jobs=[gevent.spawn(get_url,url,real_url_list) for url in url_list]
-        gevent.joinall(jobs)
+
+        j=0
+        while True:
+            try:
+                print 'Try',j
+                timeout=gevent.Timeout(5*60)
+                # timeoutを1分で設定する
+                timeout.start()
+                jobs=[gevent.spawn(get_url,url,real_url_list) for url in url_list]
+                gevent.joinall(jobs)
+            except gevent.Timeout:
+                print 'Timeout',j
+                j+=1
+                if j>2:
+                    # timeoutしたら、もう一度繰り返す
+                    # 3回だめな場合はbreak
+                    break
+            finally:
+                timeout.cancel()
+                break
+
+        return real_url_list
+
+
+    #url->tag_dict
+    def getHatebTag(self,url):
+        tag_list=[]
+        try:
+            import urllib
+            import json
+            
+            hateb_base_url='http://b.hatena.ne.jp/entry/jsonlite/?'
+            
+            query=urllib.urlencode({'url':url})
+            hateb_json=urllib.urlopen(hateb_base_url+query).read()
+
+            #記事ごとのタグをまとめるリスト
+
+            if hateb_json!='null':
+                hateb_dict=json.loads(hateb_json)
+                for hateb_bookmark_dict in hateb_dict['bookmarks']:
+                    for t in hateb_bookmark_dict['tags']:
+#db保存用
+                        t=t.replace('"','')
+                        t=t.replace('\n','')
+                        t=t.replace('\\','')
+                        t=t.replace('*','')
+                        t=t.replace('!','')
+                        t=t.replace('.','')
+                        t=t.replace('@','')
+                        t=t.replace('+','')
+                        t=t.replace('-','')
+                        t=t.replace('\'','')
+                        t=t.replace(' ','')
+#大文字->小文字
+                        t=t.lower()
+                        if len(t)!=0:
+                            #url一つにつきタグは１個
+                            if t not in tag_list:
+                                tag_list.append(t)
+            
+        finally:
+            return tag_list
+
+
+    #url_list->tag_dict
+    def getHatebTagFromUrlList(self,url_list):
+        tag_dict={}
+        for url in url_list:
+            for tag in self.getHatebTag(url):
+                tag_dict.setdefault(tag,0)
+                tag_dict[tag]+=1
+        
+        return tag_dict
+
+
+    def deleteUselessUrl(self,url_list):
+        import re
+
+        real_url_list=[]
+
+        regular_list=[re.compile('http://ustre\.am'),re.compile('http://http://tweetphoto\.com')]
+        for url in url_list:
+            for regular in regular_list:
+                if regular.match:
+                    real_url_list.append(url)
 
         return real_url_list

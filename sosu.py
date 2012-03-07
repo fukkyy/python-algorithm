@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 
 def check_sosu(num):
+    if num==1:
+        return False
     flag=0
     #素数かどうかの判定
     i=2

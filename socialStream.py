@@ -1,5 +1,10 @@
 # -*- coding:utf-8 -*-
 class socialStream:
+
+    def __init__(self):
+        self.consumer_key='your consumer key'
+        self.consumer_secret='your consumer secret'
+
     #facebookのlikeのurlを取得
     #params access_token:facebookのアクセストークン,num:取得したいurlの数
     #return urlのリスト
@@ -53,7 +58,7 @@ class socialStream:
         import feedparser
 
         url_list=[]
-        for i in range(5):
+        for i in range(num):
             atom=feedparser.parse('http://b.hatena.ne.jp/'+user_name+'/atomfeed?of='+str(i*20))
             for j in range(len(atom.entries)):
                 url_list.append(atom.entries[j]['links'][0]['href'])
@@ -62,7 +67,7 @@ class socialStream:
     #twitterのタイムラインからurlを取得
     #params access_token_key:twitterのアクセストークン,access_token_secret:twitterのトークンシークレット
     #return urlのリスト
-    def userTimelineToUrl(self,access_token_key,access_token_secret):
+    def userTimelineToUrl(self,access_token_key,access_token_secret,num=15):
 
         import twitter
         import re
@@ -71,8 +76,8 @@ class socialStream:
         import sys
 
         # 本番
-        consumer_key='your_consumer_key'
-        consumer_secret='your_consumer_secret'
+        consumer_key=self.consumer_key
+        consumer_secret=self.consumer_secret
 
         api=twitter.Api(consumer_key=consumer_key,consumer_secret=consumer_secret,access_token_key=access_token_key,access_token_secret=access_token_secret)
         url_list=[]
@@ -91,7 +96,7 @@ class socialStream:
                 i+=1
                 if len(url_list)>100:
                     break
-                elif i==15:
+                if i==num:
                     break
             except twitter.TwitterError:
                 print sys.exc_info()[1][0]
@@ -116,14 +121,14 @@ class socialStream:
     #twitterのretweetからurlを取得
     #params access_token_key:twitterのアクセストークン,access_token_secret:twitterのトークンシークレット
     #return urlのリスト
-    def getUserRetweets(self,access_token_key,access_token_secret):
+    def getUserRetweets(self,access_token_key,access_token_secret,num=15):
         print 'getUserRetweets'
         import twitter
         import time
         import sys
         
-        consumer_key='your_consumer_key'
-        consumer_secret='your_consumer_secret'
+        consumer_key=self.consumer_key
+        consumer_secret=self.consumer_secret
         
         api=twitter.Api(consumer_key=consumer_key,
                         consumer_secret=consumer_secret,
@@ -149,7 +154,7 @@ class socialStream:
                 i+=1
                 if len(url_list)>200:
                     break
-                elif i==15:
+                if i==num:
                     break
             except twitter.TwitterError:
                 print "Poko"
@@ -173,14 +178,14 @@ class socialStream:
     #twitterのfavoriteのurlを取得
     #params access_token:facebookのアクセストークン,num:取得したいurlの数
     #return urlのリスト
-    def getFavorites(self,access_token_key,access_token_secret):
+    def getFavorites(self,access_token_key,access_token_secret,num=15):
         print 'getFavorites'
         import twitter
         import time
         import sys
 
-        consumer_key='your_consumer_key'
-        consumer_secret='your_consumer_secret'
+        consumer_key=self.consumer_key
+        consumer_secret=self.consumer_secret
 
         api=twitter.Api(consumer_key=consumer_key,
                         consumer_secret=consumer_secret,
@@ -201,7 +206,7 @@ class socialStream:
                 if len(url_list)>200:
                     break
                 i+=1
-                if i==15:
+                if i==num:
                     break
             except twitter.TwitterError:
                 print sys.exc_info()[1][0]
